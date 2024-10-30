@@ -94,6 +94,7 @@ func TestSesMRSItMoney(t *testing.T) {
 
 // test for 0 balance with sesMRSsion terminate with 1s usage
 func testSesMRSItLoadConfig(t *testing.T) {
+	var err error
 	sesMRSCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesMRSCfgDIR)
 	if sesMRSCfg, err = config.NewCGRConfigFromPath(sesMRSCfgPath); err != nil {
 		t.Error(err)
@@ -119,10 +120,7 @@ func testSesMRSItStartEngine(t *testing.T) {
 }
 
 func testSesMRSItRPCConn(t *testing.T) {
-	var err error
-	if sesMRSRPC, err = newRPCClient(sesMRSCfg.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	sesMRSRPC = engine.NewRPCClient(t, sesMRSCfg.ListenCfg())
 }
 
 func testSesMRSItLoadFromFolder(t *testing.T) {

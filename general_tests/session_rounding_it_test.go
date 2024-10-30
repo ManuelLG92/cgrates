@@ -153,6 +153,7 @@ func testSesRndItPreparePrepaidDOWN(t *testing.T) {
 
 // test for 0 balance with sesRndsion terminate with 1s usage
 func testSesRndItLoadConfig(t *testing.T) {
+	var err error
 	sesRndCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesRndCfgDIR)
 	if sesRndCfg, err = config.NewCGRConfigFromPath(sesRndCfgPath); err != nil {
 		t.Error(err)
@@ -178,10 +179,7 @@ func testSesRndItStartEngine(t *testing.T) {
 }
 
 func testSesRndItRPCConn(t *testing.T) {
-	var err error
-	if sesRndRPC, err = newRPCClient(sesRndCfg.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	sesRndRPC = engine.NewRPCClient(t, sesRndCfg.ListenCfg())
 }
 
 func testSesRndItLoadRating(t *testing.T) {

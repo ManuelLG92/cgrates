@@ -295,6 +295,7 @@ const (
 	ResourceProfilesPrefix    = "rsp_"
 	ThresholdPrefix           = "thd_"
 	TrendPrefix               = "trd_"
+	RankingPrefix             = "rnk_"
 	TimingsPrefix             = "tmg_"
 	FilterPrefix              = "ftr_"
 	CDRsStatsPrefix           = "cst_"
@@ -512,7 +513,10 @@ const (
 	TotalUsage            = "TotalUsage"
 	StatID                = "StatID"
 	StatIDs               = "StatIDs"
+	SortedStatIDs         = "SortedStatIDs"
+	LastUpdate            = "LastUpdate"
 	TrendID               = "TrendID"
+	RankingID             = "RankingID"
 	BalanceType           = "BalanceType"
 	BalanceID             = "BalanceID"
 	BalanceDestinationIds = "BalanceDestinationIds"
@@ -529,6 +533,7 @@ const (
 	AccountUpdate         = "AccountUpdate"
 	StatUpdate            = "StatUpdate"
 	TrendUpdate           = "TrendUpdate"
+	RankingUpdate         = "RankingUpdate"
 	ResourceUpdate        = "ResourceUpdate"
 	CDR                   = "CDR"
 	CDRs                  = "CDRs"
@@ -1014,6 +1019,10 @@ const (
 	MetaSessionsBackup      = "*sessions_backup"
 	MetaLoadIDs             = "*load_ids"
 	MetaNodeID              = "*node_id"
+	MetaAscending           = "*ascending"
+	MetaDescending          = "*descending"
+	MetaDesc                = "*desc"
+	MetaAsc                 = "*asc"
 )
 
 // MetaMetrics
@@ -1281,6 +1290,7 @@ const (
 	ReplicatorSv1GetThreshold            = "ReplicatorSv1.GetThreshold"
 	ReplicatorSv1GetThresholdProfile     = "ReplicatorSv1.GetThresholdProfile"
 	ReplicatorSv1GetStatQueueProfile     = "ReplicatorSv1.GetStatQueueProfile"
+	ReplicatorSv1GetRanking              = "ReplicatorSv1.GetRanking"
 	ReplicatorSv1GetRankingProfile       = "ReplicatorSv1.GetRankingProfile"
 	ReplicatorSv1GetTrend                = "ReplicatorSv1.GetTrend"
 	ReplicatorSv1GetTrendProfile         = "ReplicatorSv1.GetTrendProfile"
@@ -1309,6 +1319,7 @@ const (
 	ReplicatorSv1SetStatQueue            = "ReplicatorSv1.SetStatQueue"
 	ReplicatorSv1SetFilter               = "ReplicatorSv1.SetFilter"
 	ReplicatorSv1SetStatQueueProfile     = "ReplicatorSv1.SetStatQueueProfile"
+	ReplicatorSv1SetRanking              = "ReplicatorSv1.SetRanking"
 	ReplicatorSv1SetRankingProfile       = "ReplicatorSv1.SetRankingProfile"
 	ReplicatorSv1SetTrend                = "ReplicatorSv1.SetTrend"
 	ReplicatorSv1SetTrendProfile         = "ReplicatorSv1.SetTrendProfile"
@@ -1337,6 +1348,7 @@ const (
 	ReplicatorSv1RemoveFilter            = "ReplicatorSv1.RemoveFilter"
 	ReplicatorSv1RemoveThresholdProfile  = "ReplicatorSv1.RemoveThresholdProfile"
 	ReplicatorSv1RemoveStatQueueProfile  = "ReplicatorSv1.RemoveStatQueueProfile"
+	ReplicatorSv1RemoveRanking           = "ReplicatorSv1.RemoveRanking"
 	ReplicatorSv1RemoveRankingProfile    = "ReplicatorSv1.RemoveRankingProfile"
 	ReplicatorSv1RemoveTrend             = "ReplicatorSv1.RemoveTrend"
 	ReplicatorSv1RemoveTrendProfile      = "ReplicatorSv1.RemoveTrendProfile"
@@ -1707,6 +1719,7 @@ const (
 	TrendSv1ScheduleQueries    = "TrendSv1.ScheduleQueries"
 	TrendSv1GetTrend           = "TrendSv1.GetTrend"
 	TrendSv1GetScheduledTrends = "TrendSv1.GetScheduledTrends"
+	TrendSv1GetTrendSummary    = "TrendSv1.GetTrendSummary"
 )
 
 // RankingS APIs
@@ -1993,6 +2006,7 @@ const (
 	CacheRankingProfiles         = "*ranking_profiles"
 	CacheTrendProfiles           = "*trend_profiles"
 	CacheTrends                  = "*trends"
+	CacheRankings                = "*rankings"
 	CacheThresholdProfiles       = "*threshold_profiles"
 	CacheThresholds              = "*thresholds"
 	CacheFilters                 = "*filters"
@@ -2251,6 +2265,7 @@ const (
 	StatSConnsCfg     = "stats_conns"
 	ResourceSConnsCfg = "resources_conns"
 	ApierSConnsCfg    = "apiers_conns"
+	TrendSConnsCfg    = "trends_conns"
 )
 
 // RalsCfg
@@ -2357,22 +2372,21 @@ const (
 	AsteriskConnsCfg = "asterisk_conns"
 
 	// DiameterAgentCfg
-	ListenNetCfg          = "listen_net"
-	NetworkCfg            = "network"
-	ListenersCfg          = "listeners"
-	ConcurrentRequestsCfg = "concurrent_requests"
-	ListenCfg             = "listen"
-	DictionariesPathCfg   = "dictionaries_path"
-	OriginHostCfg         = "origin_host"
-	OriginRealmCfg        = "origin_realm"
-	VendorIDCfg           = "vendor_id"
-	ProductNameCfg        = "product_name"
-	SyncedConnReqsCfg     = "synced_conn_requests"
-	ASRTemplateCfg        = "asr_template"
-	RARTemplateCfg        = "rar_template"
-	ForcedDisconnectCfg   = "forced_disconnect"
-	TemplatesCfg          = "templates"
-	RequestProcessorsCfg  = "request_processors"
+	ListenNetCfg         = "listen_net"
+	NetworkCfg           = "network"
+	ListenersCfg         = "listeners"
+	ListenCfg            = "listen"
+	DictionariesPathCfg  = "dictionaries_path"
+	OriginHostCfg        = "origin_host"
+	OriginRealmCfg       = "origin_realm"
+	VendorIDCfg          = "vendor_id"
+	ProductNameCfg       = "product_name"
+	SyncedConnReqsCfg    = "synced_conn_requests"
+	ASRTemplateCfg       = "asr_template"
+	RARTemplateCfg       = "rar_template"
+	ForcedDisconnectCfg  = "forced_disconnect"
+	TemplatesCfg         = "templates"
+	RequestProcessorsCfg = "request_processors"
 
 	JanusConnsCfg = "janus_conns"
 	// RequestProcessor
@@ -2412,12 +2426,13 @@ const (
 	PrecacheCfg   = "precache"
 
 	// CdreCfg
-	ExportPathCfg        = "export_path"
-	AttributeSContextCfg = "attributes_context"
-	SynchronousCfg       = "synchronous"
-	AttemptsCfg          = "attempts"
-	AttributeContextCfg  = "attribute_context"
-	AttributeIDsCfg      = "attribute_ids"
+	ExportPathCfg         = "export_path"
+	AttributeSContextCfg  = "attributes_context"
+	SynchronousCfg        = "synchronous"
+	AttemptsCfg           = "attempts"
+	AttributeContextCfg   = "attribute_context"
+	AttributeIDsCfg       = "attribute_ids"
+	ConcurrentRequestsCfg = "concurrent_requests"
 
 	//LoaderSCfg
 	DryRunCfg       = "dry_run"

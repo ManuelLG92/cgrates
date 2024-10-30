@@ -169,6 +169,7 @@ type FilterSJsonCfg struct {
 	Stats_conns     *[]string
 	Resources_conns *[]string
 	Apiers_conns    *[]string
+	Trends_conns    *[]string
 }
 
 // Rater config section
@@ -534,7 +535,6 @@ type DiameterAgentJsonCfg struct {
 	Origin_realm         *string
 	Vendor_id            *int
 	Product_name         *string
-	Concurrent_requests  *int
 	Synced_conn_requests *bool
 	Asr_template         *string
 	Rar_template         *string
@@ -689,8 +689,13 @@ type TrendsJsonCfg struct {
 }
 
 type RankingsJsonCfg struct {
-	Enabled     *bool
-	Stats_conns *[]string
+	Enabled          *bool
+	Stats_conns      *[]string
+	Thresholds_conns *[]string
+	Scheduled_ids    map[string][]string
+	Store_interval   *string
+	Ees_conns        *[]string
+	Ees_exporter_ids *[]string
 }
 
 type ThresholdsOptsJson struct {

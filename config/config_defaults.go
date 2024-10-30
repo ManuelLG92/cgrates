@@ -342,6 +342,7 @@ const CGRATES_CFG_JSON = `
 	"stats_conns": [],	// connections to StatS for <*stats> filters, empty to disable stats functionality: <""|*internal|$rpc_conns_id>
 	"resources_conns": [],	// connections to ResourceS for <*resources> filters, empty to disable stats functionality: <""|*internal|$rpc_conns_id>
 	"apiers_conns": [],	// connections to RALs for <*accounts> filters, empty to disable stats functionality: <""|*internal|$rpc_conns_id>
+	"trends_conns": [],	// connections to TrendS for <*trends> filters, empty to disable trends functionality: <""|*internal|$rpc_conns_id>
 },
 
 
@@ -728,7 +729,6 @@ const CGRATES_CFG_JSON = `
 	"origin_realm": "cgrates.org",					// diameter Origin-Realm AVP used in replies
 	"vendor_id": 0,							// diameter Vendor-Id AVP used in replies
 	"product_name": "CGRateS",					// diameter Product-Name AVP used in replies
-	"concurrent_requests": -1,					// limit the number of active requests processed by the server <-1|0-n>
 	"synced_conn_requests": false,					// process one request at the time per connection
 	"asr_template": "",						// enable AbortSession message being sent to client on DisconnectSession
 	"rar_template": "",						// template used to build the Re-Auth-Request
@@ -854,16 +854,29 @@ const CGRATES_CFG_JSON = `
 	}
 },
 
-"trends":{			// TrendS config
-	"enabled": false,	// starts TrendS service: <true|false>.
-	"store_interval": "",
+
+"trends":{							// TrendS config
+	"enabled": false,				// starts TrendS service: <true|false>.
+	"store_interval": "", 			// dump cache regularly to dataDB, 0 - dump at start/shutdown: <""|$dur>
 	"store_uncompressed_limit": 0,	// used to compress metrics
-	"stats_conns": [],	// connections to StatS ,empty to disable stats functionality: <""|*internal|$rpc_conns_id>
-	"scheduled_ids": {},
-	"thresholds_conns": [],	
- 	"ees_conns": [],			 
-	"ees_exporter_ids": []                     
+	"stats_conns": [],				// connections to StatS, empty to disable stats functionality: <""|*internal|$rpc_conns_id>
+	"scheduled_ids": {},			// autoload these trend ids on start
+	"thresholds_conns": [],			// connections to ThresholdS for trendSummary reporting, empty to disable thresholds functionality: <""|*internal|$rpc_conns_id>
+ 	"ees_conns": [],			 	// connections to EEs for trendSummary, empty to disable export functionality: <""|*internal|$rpc_conns_id>
+	"ees_exporter_ids": []			// list of EventExporter profiles to use for real-time trendSummary exports 
 },
+
+
+ "rankings":{					// RankingS config
+	"enabled": false,			// starts  RankingS service: <true|false>.
+	"store_interval": "",		// dump cache regularly to dataDB, 0 - dump at start/shutdown: <""|$dur>
+ 	"stats_conns": [],			// connections to StatS, empty to disable stats functionality: <""|*internal|$rpc_conns_id>
+	"scheduled_ids": {},		// autoload these ranking ids on start
+	"thresholds_conns": [],		// connections to ThresholdS for rankingSummary reporting, empty to disable thresholds functionality: <""|*internal|$rpc_conns_id>
+ 	"ees_conns": [],			// connections to EEs for rankingSummary events, empty to disable export functionality: <""|*internal|$rpc_conns_id>
+	"ees_exporter_ids": []		// list of EventExporter profiles to use for real-time rankingSummary exports 
+},
+
 
 "thresholds": {					// ThresholdS
 	"enabled": false,			// starts ThresholdS service: <true|false>.

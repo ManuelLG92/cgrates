@@ -77,6 +77,7 @@ func TestSrIt(t *testing.T) {
 }
 
 func testSrItLoadConfig(t *testing.T) {
+	var err error
 	srCfgPath = path.Join(*utils.DataDir, "conf", "samples", srCfgDIR)
 	if srCfg, err = config.NewCGRConfigFromPath(srCfgPath); err != nil {
 		t.Error(err)
@@ -102,11 +103,7 @@ func testSrItStartEngine(t *testing.T) {
 }
 
 func testSrItRPCConn(t *testing.T) {
-	var err error
-	srrpc, err = newRPCClient(srCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	srrpc = engine.NewRPCClient(t, srCfg.ListenCfg())
 }
 
 func testSrItLoadFromFolder(t *testing.T) {

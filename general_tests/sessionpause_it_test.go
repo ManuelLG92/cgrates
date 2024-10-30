@@ -78,6 +78,7 @@ func TestSesPauseItSessions(t *testing.T) {
 }
 
 func testSesPauseItLoadConfig(t *testing.T) {
+	var err error
 	sesPauseCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesPauseCfgDir)
 	if sesPauseCfg, err = config.NewCGRConfigFromPath(sesPauseCfgPath); err != nil {
 		t.Error(err)
@@ -103,11 +104,7 @@ func testSesPauseItStartEngine(t *testing.T) {
 }
 
 func testSesPauseItRPCConn(t *testing.T) {
-	var err error
-	sesPauseRPC, err = newRPCClient(sesPauseCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesPauseRPC = engine.NewRPCClient(t, sesPauseCfg.ListenCfg())
 }
 
 func testSesPauseItLoadFromFolder(t *testing.T) {
@@ -282,6 +279,7 @@ func testSesPauseItAllPause(t *testing.T) {
 	cdrs[0].OrderID = 0
 	cdString := cdrs[0].CostDetails
 	cdrs[0].CostDetails = ""
+	var err error
 	var val time.Time
 	if val, err = utils.ParseTimeDetectLayout(cdrs[0].AnswerTime, ""); err != nil {
 		t.Fatal(err)
@@ -418,6 +416,7 @@ func testSesPauseItInitPause(t *testing.T) {
 	cdrs[0].OrderID = 0
 	cdString := cdrs[0].CostDetails
 	cdrs[0].CostDetails = ""
+	var err error
 	var val time.Time
 	if val, err = utils.ParseTimeDetectLayout(cdrs[0].AnswerTime, ""); err != nil {
 		t.Fatal(err)
@@ -605,6 +604,7 @@ func testSesPauseItInitUpdatePause(t *testing.T) {
 	cdrs[0].OrderID = 0
 	cdString := cdrs[0].CostDetails
 	cdrs[0].CostDetails = ""
+	var err error
 	var val time.Time
 	if val, err = utils.ParseTimeDetectLayout(cdrs[0].AnswerTime, ""); err != nil {
 		t.Fatal(err)
@@ -802,6 +802,7 @@ func testSesPauseItUpdatePause(t *testing.T) {
 	cdrs[0].OrderID = 0
 	cdString := cdrs[0].CostDetails
 	cdrs[0].CostDetails = ""
+	var err error
 	var val time.Time
 	if val, err = utils.ParseTimeDetectLayout(cdrs[0].AnswerTime, ""); err != nil {
 		t.Fatal(err)

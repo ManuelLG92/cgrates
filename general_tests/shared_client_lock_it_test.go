@@ -140,11 +140,7 @@ func testSharedClientLockStartEngine(t *testing.T) {
 }
 
 func testSharedClientLockRpcConn(t *testing.T) {
-	var err error
-	clntLockRPC, err = newRPCClient(clntLockCfg.ListenCfg())
-	if err != nil {
-		t.Fatal("Could not connect to engine: ", err.Error())
-	}
+	clntLockRPC = engine.NewRPCClient(t, clntLockCfg.ListenCfg())
 }
 
 func testSharedClientLockSetProfiles(t *testing.T) {
@@ -198,8 +194,8 @@ func testSharedClientLockCDRsProcessEvent(t *testing.T) {
 		},
 	}
 	var reply string
-	err = clntLockRPC.Call(context.Background(), utils.CDRsV1ProcessEvent, argsEv, &reply)
-	if err == nil || err.Error() != utils.ErrPartiallyExecuted.Error() {
+	if err := clntLockRPC.Call(context.Background(), utils.CDRsV1ProcessEvent, argsEv, &reply); err == nil ||
+		err.Error() != utils.ErrPartiallyExecuted.Error() {
 		t.Errorf("expected: <%v>,\nreceived: <%v>",
 			utils.ErrPartiallyExecuted, err)
 	}

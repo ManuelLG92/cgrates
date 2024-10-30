@@ -76,6 +76,7 @@ func TestSesRoutesItSessions(t *testing.T) {
 }
 
 func testSesRoutesItLoadConfig(t *testing.T) {
+	var err error
 	sesRoutesCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesRoutesCfgDir)
 	if sesRoutesCfg, err = config.NewCGRConfigFromPath(sesRoutesCfgPath); err != nil {
 		t.Error(err)
@@ -101,11 +102,7 @@ func testSesRoutesItStartEngine(t *testing.T) {
 }
 
 func testSesRoutesItRPCConn(t *testing.T) {
-	var err error
-	sesRoutesRPC, err = newRPCClient(sesRoutesCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesRoutesRPC = engine.NewRPCClient(t, sesRoutesCfg.ListenCfg())
 }
 
 func testSesRoutesItLoadFromFolder(t *testing.T) {

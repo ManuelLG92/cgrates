@@ -82,7 +82,7 @@ func (tS *TrendS) computeTrend(tP *TrendProfile) {
 		&floatMetrics); err != nil {
 		utils.Logger.Warning(
 			fmt.Sprintf(
-				"<%s> computing trend for with id: <%s:%s> stats <%s> error: <%s>",
+				"<%s> computing trend with id: <%s:%s> for stats <%s> error: <%s>",
 				utils.TrendS, tP.Tenant, tP.ID, tP.StatID, err.Error()))
 		return
 	}
@@ -135,7 +135,6 @@ func (tS *TrendS) computeTrend(tP *TrendProfile) {
 		trnd.Metrics[now][mWt.ID] = mWt
 		trnd.indexesAppendMetric(mWt, now)
 	}
-
 	if err = tS.storeTrend(trnd); err != nil {
 		utils.Logger.Warning(
 			fmt.Sprintf(
@@ -180,22 +179,15 @@ func (tS *TrendS) processThresholds(trnd *Trend) (err error) {
 		copy(thIDs, trnd.tPrfl.ThresholdIDs)
 	}
 	opts[utils.OptsThresholdsProfileIDs] = thIDs
-	mtrx := make(map[string]*MetricWithTrend)
-	for mtID, mtWT := range trnd.Metrics[trnd.RunTimes[len(trnd.RunTimes)-1]] {
-		mtrx[mtID] = &MetricWithTrend{
-			ID:          mtWT.ID,
-			Value:       mtWT.Value,
-			TrendGrowth: mtWT.TrendGrowth,
-			TrendLabel:  mtWT.TrendLabel,
-		}
-	}
+	ts := trnd.asTrendSummary()
 	trndEv := &utils.CGREvent{
 		Tenant:  trnd.Tenant,
 		ID:      utils.GenUUID(),
 		APIOpts: opts,
 		Event: map[string]any{
 			utils.TrendID: trnd.ID,
-			utils.Metrics: mtrx,
+			utils.Time:    ts.Time,
+			utils.Metrics: ts.Metrics,
 		},
 	}
 	var withErrs bool
@@ -225,15 +217,7 @@ func (tS *TrendS) processEEs(trnd *Trend) (err error) {
 	opts := map[string]any{
 		utils.MetaEventType: utils.TrendUpdate,
 	}
-	mtrx := make(map[string]*MetricWithTrend)
-	for mtID, mtWT := range trnd.Metrics[trnd.RunTimes[len(trnd.RunTimes)-1]] {
-		mtrx[mtID] = &MetricWithTrend{
-			ID:          mtWT.ID,
-			Value:       mtWT.Value,
-			TrendGrowth: mtWT.TrendGrowth,
-			TrendLabel:  mtWT.TrendLabel,
-		}
-	}
+	ts := trnd.asTrendSummary()
 	trndEv := &CGREventWithEeIDs{
 		CGREvent: &utils.CGREvent{
 			Tenant:  trnd.Tenant,
@@ -241,7 +225,8 @@ func (tS *TrendS) processEEs(trnd *Trend) (err error) {
 			APIOpts: opts,
 			Event: map[string]any{
 				utils.TrendID: trnd.ID,
-				utils.Metrics: mtrx,
+				utils.Time:    ts.Time,
+				utils.Metrics: ts.Metrics,
 			},
 		},
 		EeIDs: tS.cgrcfg.TrendSCfg().EEsExporterIDs,
@@ -538,11 +523,11 @@ func (tS *TrendS) V1GetScheduledTrends(ctx *context.Context, args *utils.ArgSche
 	}
 	var scheduledTrends []utils.ScheduledTrend
 	var entryIds map[string]cron.EntryID
-	if len(args.TrendIDPrefix) == 0 {
+	if len(args.TrendIDPrefixes) == 0 {
 		entryIds = trendIDsMp
 	} else {
 		entryIds = make(map[string]cron.EntryID)
-		for _, tID := range args.TrendIDPrefix {
+		for _, tID := range args.TrendIDPrefixes {
 			for key, entryID := range trendIDsMp {
 				if strings.HasPrefix(key, tID) {
 					entryIds[key] = entryID
@@ -560,9 +545,9 @@ func (tS *TrendS) V1GetScheduledTrends(ctx *context.Context, args *utils.ArgSche
 			continue
 		}
 		scheduledTrends = append(scheduledTrends, utils.ScheduledTrend{
-			TrendID: id,
-			Next:    entry.Next,
-			Prev:    entry.Prev,
+			TrendID:  id,
+			Next:     entry.Next,
+			Previous: entry.Prev,
 		})
 	}
 	slices.SortFunc(scheduledTrends, func(a, b utils.ScheduledTrend) int {
@@ -570,4 +555,16 @@ func (tS *TrendS) V1GetScheduledTrends(ctx *context.Context, args *utils.ArgSche
 	})
 	*schedTrends = scheduledTrends
 	return nil
+}
+
+func (tS *TrendS) V1GetTrendSummary(ctx *context.Context, arg utils.TenantIDWithAPIOpts, reply *TrendSummary) (err error) {
+	var trnd *Trend
+	if trnd, err = tS.dm.GetTrend(arg.Tenant, arg.ID, true, true, utils.NonTransactional); err != nil {
+		return
+	}
+	trnd.tMux.RLock()
+	trndS := trnd.asTrendSummary()
+	trnd.tMux.RUnlock()
+	*reply = *trndS
+	return
 }

@@ -75,6 +75,7 @@ func TestSesPIt(t *testing.T) {
 }
 
 func testSesPItLoadConfig(t *testing.T) {
+	var err error
 	sesPCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesPCfgDir)
 	if sesPCfg, err = config.NewCGRConfigFromPath(sesPCfgPath); err != nil {
 		t.Error(err)
@@ -107,11 +108,7 @@ func testSesPItStartEngineWithProfiling(t *testing.T) {
 }
 
 func testSesPItRPCConn(t *testing.T) {
-	var err error
-	sesPRPC, err = newRPCClient(sesPCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesPRPC = engine.NewRPCClient(t, sesPCfg.ListenCfg())
 }
 
 func setAccounts(t *testing.T, n int) (err error) {

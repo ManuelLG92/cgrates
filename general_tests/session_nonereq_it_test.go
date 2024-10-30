@@ -74,6 +74,7 @@ func TestSesNoneReqTypeItSessions(t *testing.T) {
 }
 
 func testSesNoneReqTypeItLoadConfig(t *testing.T) {
+	var err error
 	sesNoneReqTypeCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesNoneReqTypeCfgDir)
 	if sesNoneReqTypeCfg, err = config.NewCGRConfigFromPath(sesNoneReqTypeCfgPath); err != nil {
 		t.Error(err)
@@ -99,11 +100,7 @@ func testSesNoneReqTypeItStartEngine(t *testing.T) {
 }
 
 func testSesNoneReqTypeItRPCConn(t *testing.T) {
-	var err error
-	sesNoneReqTypeRPC, err = newRPCClient(sesNoneReqTypeCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesNoneReqTypeRPC = engine.NewRPCClient(t, sesNoneReqTypeCfg.ListenCfg())
 }
 
 func testSesNoneReqTypeItAddChargerS(t *testing.T) {

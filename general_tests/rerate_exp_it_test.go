@@ -129,21 +129,14 @@ func testRerateExpStartEngine(t *testing.T) {
 	if _, err := engine.StopStartEngine(ng1CfgPath, rrDelay); err != nil {
 		t.Fatal(err)
 	}
-	if _, err = engine.StartEngine(ng2CfgPath, rrDelay); err != nil {
+	if _, err := engine.StartEngine(ng2CfgPath, rrDelay); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func testRerateExpRPCConn(t *testing.T) {
-	var err error
-	ng1RPC, err = newRPCClient(ng1Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal("Could not connect to rater: ", err.Error())
-	}
-	ng2RPC, err = newRPCClient(ng2Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal("Could not connect to rater: ", err.Error())
-	}
+	ng1RPC = engine.NewRPCClient(t, ng1Cfg.ListenCfg())
+	ng2RPC = engine.NewRPCClient(t, ng2Cfg.ListenCfg())
 }
 
 func testRerateExpLoadTP(t *testing.T) {

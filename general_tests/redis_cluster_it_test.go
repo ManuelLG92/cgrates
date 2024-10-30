@@ -181,11 +181,7 @@ func testClsrStartEngine(t *testing.T) {
 }
 
 func testClsrRPCConection(t *testing.T) {
-	var err error
-	clsrRPC, err = newRPCClient(clsrConfig.ListenCfg()) // We connect over JSON so we can also troubleshoot if needed
-	if err != nil {
-		t.Fatal(err)
-	}
+	clsrRPC = engine.NewRPCClient(t, clsrConfig.ListenCfg())
 }
 
 func testClsrSetGetAttribute(t *testing.T) {
@@ -222,7 +218,7 @@ func testClsrSetGetAttribute(t *testing.T) {
 
 func testClsrStopMaster(t *testing.T) {
 	path := fmt.Sprintf(clsrNodeCfgPath, 3)
-	if err = clsrNodes[path].Process.Kill(); err != nil {
+	if err := clsrNodes[path].Process.Kill(); err != nil {
 		t.Fatal(err)
 	}
 	time.Sleep(time.Second)

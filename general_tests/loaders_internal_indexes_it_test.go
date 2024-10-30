@@ -73,6 +73,7 @@ func TestLoadersIDBIdxIt(t *testing.T) {
 }
 
 func testLoadersIDBIdxItLoadConfig(t *testing.T) {
+	var err error
 	loadersIDBIdxCfgPath = path.Join(*utils.DataDir, "conf", "samples", loadersIDBIdxCfgDir)
 	if loadersIDBIdxCfg, err = config.NewCGRConfigFromPath(loadersIDBIdxCfgPath); err != nil {
 		t.Error(err)
@@ -101,13 +102,8 @@ func testLoadersIDBIdxItStartEngines(t *testing.T) {
 }
 
 func testLoadersIDBIdxItRPCConn(t *testing.T) {
-	var err error
-	if loadersIDBIdxRPC, err = newRPCClient(loadersIDBIdxCfg.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
-	if loadersIDBIdxRPCInternal, err = newRPCClient(loadersIDBIdxCfgInternal.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	loadersIDBIdxRPC = engine.NewRPCClient(t, loadersIDBIdxCfg.ListenCfg())
+	loadersIDBIdxRPCInternal = engine.NewRPCClient(t, loadersIDBIdxCfgInternal.ListenCfg())
 }
 
 func testLoadersIDBIdxItLoad(t *testing.T) {

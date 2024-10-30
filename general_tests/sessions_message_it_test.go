@@ -73,6 +73,7 @@ func TestSesMFDIt(t *testing.T) {
 }
 
 func testSesMFDItLoadConfig(t *testing.T) {
+	var err error
 	sesMFDCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesMFDCfgDir)
 	if sesMFDCfg, err = config.NewCGRConfigFromPath(sesMFDCfgPath); err != nil {
 		t.Error(err)
@@ -98,11 +99,7 @@ func testSesMFDItStartEngine(t *testing.T) {
 }
 
 func testSesMFDItRPCConn(t *testing.T) {
-	var err error
-	sesMFDRPC, err = newRPCClient(sesMFDCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesMFDRPC = engine.NewRPCClient(t, sesMFDCfg.ListenCfg())
 }
 
 func testSesMFDItSetChargers(t *testing.T) {

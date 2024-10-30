@@ -74,6 +74,7 @@ func TestSesCdrsTntChange(t *testing.T) {
 }
 
 func testSesTntChngCdrsLoadConfig(t *testing.T) {
+	var err error
 	sesTntChngCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesTntChngCfgDir)
 	if sesTntChngCfg, err = config.NewCGRConfigFromPath(sesTntChngCfgPath); err != nil {
 		t.Error(err)
@@ -99,11 +100,7 @@ func testSesTntChngCdrsStartEngine(t *testing.T) {
 }
 
 func testSesTntChngCdrsRPCConn(t *testing.T) {
-	var err error
-	sesTntChngRPC, err = newRPCClient(sesTntChngCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	sesTntChngRPC = engine.NewRPCClient(t, sesTntChngCfg.ListenCfg())
 }
 
 func testSesTntChngCdrsSetChargerProfile1(t *testing.T) {

@@ -103,6 +103,7 @@ func TestFilterUpdateIT(t *testing.T) {
 
 // Init Config
 func testFilterUpdateInitCfg(t *testing.T) {
+	var err error
 	fltrUpdateCfgPath1 = path.Join(*utils.DataDir, "conf", "samples", "cache_replicate", fltrUpdateCfgDIR1)
 	if fltrUpdateCfg1, err = config.NewCGRConfigFromPath(fltrUpdateCfgPath1); err != nil {
 		t.Fatal(err)
@@ -125,6 +126,7 @@ func testFilterUpdateResetDB(t *testing.T) {
 
 // Start CGR Engine
 func testFilterUpdateStartEngine(t *testing.T) {
+	var err error
 	if _, err = engine.StopStartEngine(fltrUpdateCfgPath1, *utils.WaitRater); err != nil {
 		t.Fatal(err)
 	}
@@ -136,12 +138,8 @@ func testFilterUpdateStartEngine(t *testing.T) {
 
 // Connect rpc client to rater
 func testFilterUpdateRpcConn(t *testing.T) {
-	if fltrUpdateRPC1, err = newRPCClient(fltrUpdateCfg1.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
-	if fltrUpdateRPC2, err = newRPCClient(fltrUpdateCfg2.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	fltrUpdateRPC1 = engine.NewRPCClient(t, fltrUpdateCfg1.ListenCfg())
+	fltrUpdateRPC2 = engine.NewRPCClient(t, fltrUpdateCfg2.ListenCfg())
 }
 
 func testFilterUpdateStopEngine(t *testing.T) {

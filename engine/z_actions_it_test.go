@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package engine
 
 import (
-	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -34,7 +33,6 @@ import (
 
 	"github.com/cgrates/birpc"
 	"github.com/cgrates/birpc/context"
-	"github.com/cgrates/birpc/jsonrpc"
 	"github.com/cgrates/cgrates/config"
 	"github.com/cgrates/cgrates/utils"
 )
@@ -116,12 +114,7 @@ func testActionsitStartEngine(t *testing.T) {
 
 // Connect rpc client to rater
 func testActionsitRpcConn(t *testing.T) {
-	var err error
-	// time.Sleep(500 * time.Millisecond)
-	actsLclRpc, err = newRPCClient(actsLclCfg.ListenCfg()) // We connect over JSON so we can also troubleshoot if needed
-	if err != nil {
-		t.Fatal(err)
-	}
+	actsLclRpc = NewRPCClient(t, actsLclCfg.ListenCfg())
 }
 
 func testActionsitSetCdrlogDebit(t *testing.T) {
@@ -978,16 +971,5 @@ func testActionsitremoteSetAccount(t *testing.T) {
 	acc2.UpdateTime = exp.UpdateTime
 	if utils.ToJSON(exp) != utils.ToJSON(acc2) {
 		t.Errorf("Expected: %s,received: %s", utils.ToJSON(exp), utils.ToJSON(acc2))
-	}
-}
-
-func newRPCClient(cfg *config.ListenCfg) (c *birpc.Client, err error) {
-	switch *utils.Encoding {
-	case utils.MetaJSON:
-		return jsonrpc.Dial(utils.TCP, cfg.RPCJSONListen)
-	case utils.MetaGOB:
-		return birpc.Dial(utils.TCP, cfg.RPCGOBListen)
-	default:
-		return nil, errors.New("UNSUPPORTED_RPC")
 	}
 }

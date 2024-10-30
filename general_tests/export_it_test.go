@@ -86,6 +86,7 @@ func TestExport(t *testing.T) {
 }
 
 func testExpLoadConfig(t *testing.T) {
+	var err error
 	expCfgPath = path.Join(*utils.DataDir, "conf", "samples", expCfgDir)
 	if expCfg, err = config.NewCGRConfigFromPath(expCfgPath); err != nil {
 		t.Error(err)
@@ -111,11 +112,7 @@ func testExpStartEngine(t *testing.T) {
 }
 
 func testExpRPCConn(t *testing.T) {
-	var err error
-	expRpc, err = newRPCClient(expCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	expRpc = engine.NewRPCClient(t, expCfg.ListenCfg())
 }
 
 func testExpLoadTPFromFolder(t *testing.T) {

@@ -66,6 +66,7 @@ func TestTwoEngines(t *testing.T) {
 }
 
 func testTwoEnginesInitConfig(t *testing.T) {
+	var err error
 	engineOneCfgPath = path.Join(*utils.DataDir, "conf", "samples", "twoengines", "engine1")
 	if engineOneCfg, err = config.NewCGRConfigFromPath(engineOneCfgPath); err != nil {
 		t.Fatal(err)
@@ -96,15 +97,8 @@ func testTwoEnginesStartEngine(t *testing.T) {
 }
 
 func testTwoEnginesRPC(t *testing.T) {
-	var err error
-	engineOneRpc, err = newRPCClient(engineOneCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
-	engineTwoRpc, err = newRPCClient(engineTwoCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	engineOneRpc = engine.NewRPCClient(t, engineOneCfg.ListenCfg())
+	engineTwoRpc = engine.NewRPCClient(t, engineTwoCfg.ListenCfg())
 }
 
 func testTwoEnginesCheckCacheBeforeSet(t *testing.T) {

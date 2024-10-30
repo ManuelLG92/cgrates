@@ -1020,7 +1020,6 @@ func TestDiameterAgentJsonCfg(t *testing.T) {
 		Origin_realm:         utils.StringPointer("cgrates.org"),
 		Vendor_id:            utils.IntPointer(0),
 		Product_name:         utils.StringPointer("CGRateS"),
-		Concurrent_requests:  utils.IntPointer(-1),
 		Synced_conn_requests: utils.BoolPointer(false),
 		Asr_template:         utils.StringPointer(""),
 		Rar_template:         utils.StringPointer(""),
@@ -1165,6 +1164,7 @@ func TestDfFilterSJsonCfg(t *testing.T) {
 		Stats_conns:     &[]string{},
 		Resources_conns: &[]string{},
 		Apiers_conns:    &[]string{},
+		Trends_conns:    &[]string{},
 	}
 	dfCgrJSONCfg, err := NewCgrJsonCfgFromBytes([]byte(CGRATES_CFG_JSON))
 	if err != nil {

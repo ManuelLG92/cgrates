@@ -111,11 +111,7 @@ func testAttributeSStartEngine(t *testing.T) {
 
 // Connect rpc client to rater
 func testAttributeSRPCConn(t *testing.T) {
-	var err error
-	attrRPC, err = newRPCClient(attrCfg.ListenCfg()) // We connect over JSON so we can also troubleshoot if needed
-	if err != nil {
-		t.Fatal(err)
-	}
+	attrRPC = engine.NewRPCClient(t, attrCfg.ListenCfg())
 }
 
 func testAttributeSLoadFromFolder(t *testing.T) {
@@ -1116,7 +1112,7 @@ cgrates.org,FLTR_OR_DESTINATION_MATCH,*destinations,~*req.Destination,DST_20;DST
 cgrates.org,FLTR_DESTINATION_MATCH,*destinations,~*req.Destination,DST_10,`,
 	}
 
-	ng := TestEngine{
+	ng := engine.TestEngine{
 		ConfigJSON: content,
 		TpFiles:    tpFiles,
 	}
@@ -1300,7 +1296,7 @@ cgrates.org,ATTR_ARITH,,,,,*req.3-4,*difference,3;4,,
 cgrates.org,ATTR_ARITH,,,,,*req.MultiplyBetweenVariables,*multiply,~*req.Elem1;~*req.Elem2,,`,
 	}
 
-	ng := TestEngine{
+	ng := engine.TestEngine{
 		ConfigJSON: content,
 		TpFiles:    tpFiles,
 	}

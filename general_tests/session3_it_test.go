@@ -83,6 +83,7 @@ func TestSes3ItSessions(t *testing.T) {
 }
 
 func testSes3ItLoadConfig(t *testing.T) {
+	var err error
 	ses3CfgPath = path.Join(*utils.DataDir, "conf", "samples", ses3CfgDir)
 	if ses3Cfg, err = config.NewCGRConfigFromPath(ses3CfgPath); err != nil {
 		t.Error(err)
@@ -108,11 +109,7 @@ func testSes3ItStartEngine(t *testing.T) {
 }
 
 func testSes3ItRPCConn(t *testing.T) {
-	var err error
-	ses3RPC, err = newRPCClient(ses3Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	ses3RPC = engine.NewRPCClient(t, ses3Cfg.ListenCfg())
 }
 
 func testSes3ItLoadFromFolder(t *testing.T) {

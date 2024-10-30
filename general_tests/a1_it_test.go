@@ -78,6 +78,7 @@ func TestA1It(t *testing.T) {
 }
 
 func testA1itLoadConfig(t *testing.T) {
+	var err error
 	a1CfgPath = path.Join(*utils.DataDir, "conf", "samples", a1ConfigDir)
 	if a1Cfg, err = config.NewCGRConfigFromPath(a1CfgPath); err != nil {
 		t.Error(err)
@@ -103,11 +104,7 @@ func testA1itStartEngine(t *testing.T) {
 }
 
 func testA1itRPCConn(t *testing.T) {
-	var err error
-	a1rpc, err = newRPCClient(a1Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	a1rpc = engine.NewRPCClient(t, a1Cfg.ListenCfg())
 }
 
 func testA1itLoadTPFromFolder(t *testing.T) {

@@ -107,11 +107,7 @@ func testAccWThdStartEngine(t *testing.T) {
 }
 
 func testAccWThdRpcConn(t *testing.T) {
-	var err error
-	accWThdRpc, err = newRPCClient(accWThdCfg.ListenCfg()) // We connect over JSON so we can troubleshoot if needed
-	if err != nil {
-		t.Fatal("Could not connect to rater: ", err.Error())
-	}
+	accWThdRpc = engine.NewRPCClient(t, accWThdCfg.ListenCfg())
 }
 
 func testAccWThdSetThresholdProfile(t *testing.T) {
@@ -212,10 +208,9 @@ func testAccWThdDebit1(t *testing.T) {
 		RunID:         utils.MetaDefault,
 	}
 	cc := new(engine.CallCost)
-	err = accWThdRpc.Call(context.Background(), utils.ResponderMaxDebit, &engine.CallDescriptorWithAPIOpts{
+	if err := accWThdRpc.Call(context.Background(), utils.ResponderMaxDebit, &engine.CallDescriptorWithAPIOpts{
 		CallDescriptor: cd,
-	}, cc)
-	if err != nil {
+	}, cc); err != nil {
 		t.Error(err)
 	}
 }
@@ -237,10 +232,9 @@ func testAccWThdDebit2(t *testing.T) {
 		RunID:         utils.MetaDefault,
 	}
 	cc := new(engine.CallCost)
-	err = accWThdRpc.Call(context.Background(), utils.ResponderMaxDebit, &engine.CallDescriptorWithAPIOpts{
+	if err := accWThdRpc.Call(context.Background(), utils.ResponderMaxDebit, &engine.CallDescriptorWithAPIOpts{
 		CallDescriptor: cd,
-	}, cc)
-	if err != nil {
+	}, cc); err != nil {
 		t.Error(err)
 	}
 }

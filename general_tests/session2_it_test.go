@@ -76,6 +76,7 @@ func TestSes2It(t *testing.T) {
 }
 
 func testSes2ItLoadConfig(t *testing.T) {
+	var err error
 	ses2CfgPath = path.Join(*utils.DataDir, "conf", "samples", ses2CfgDir)
 	if ses2Cfg, err = config.NewCGRConfigFromPath(ses2CfgPath); err != nil {
 		t.Error(err)
@@ -101,11 +102,7 @@ func testSes2ItStartEngine(t *testing.T) {
 }
 
 func testSes2ItRPCConn(t *testing.T) {
-	var err error
-	ses2RPC, err = newRPCClient(ses2Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	ses2RPC = engine.NewRPCClient(t, ses2Cfg.ListenCfg())
 }
 
 func testSes2ItLoadFromFolder(t *testing.T) {

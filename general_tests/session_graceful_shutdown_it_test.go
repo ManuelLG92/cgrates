@@ -86,6 +86,7 @@ func TestSessionSRplcGracefulShutdown(t *testing.T) {
 
 // Init Config
 func testSessionSRplcInitCfg(t *testing.T) {
+	var err error
 	smgRplcCfgPath1 = path.Join(*utils.DataDir, "conf", "samples", "sessions_replication", smgRplcCfgDIR1)
 	if smgRplCfg1, err = config.NewCGRConfigFromPath(smgRplcCfgPath1); err != nil {
 		t.Fatal(err)
@@ -108,6 +109,7 @@ func testSessionSRplcResetDB(t *testing.T) {
 
 // Start CGR Engine
 func testSessionSRplcStartEngine(t *testing.T) {
+	var err error
 	if _, err = engine.StopStartEngine(smgRplcCfgPath1, *utils.WaitRater); err != nil {
 		t.Fatal(err)
 	}
@@ -119,12 +121,8 @@ func testSessionSRplcStartEngine(t *testing.T) {
 
 // Connect rpc client to rater
 func testSessionSRplcApierRpcConn(t *testing.T) {
-	if smgRplcRPC1, err = newRPCClient(smgRplCfg1.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
-	if smgRplcRPC2, err = newRPCClient(smgRplCfg2.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	smgRplcRPC1 = engine.NewRPCClient(t, smgRplCfg1.ListenCfg())
+	smgRplcRPC2 = engine.NewRPCClient(t, smgRplCfg2.ListenCfg())
 }
 
 func testSessionSRplcApierGetActiveSessionsNotFound(t *testing.T) {

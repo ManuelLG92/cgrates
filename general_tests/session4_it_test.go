@@ -73,6 +73,7 @@ func TestSes4ItSessions(t *testing.T) {
 }
 
 func testSes4ItLoadConfig(t *testing.T) {
+	var err error
 	ses4CfgPath = path.Join(*utils.DataDir, "conf", "samples", ses4CfgDir)
 	if ses4Cfg, err = config.NewCGRConfigFromPath(ses4CfgPath); err != nil {
 		t.Error(err)
@@ -98,11 +99,7 @@ func testSes4ItStartEngine(t *testing.T) {
 }
 
 func testSes4ItRPCConn(t *testing.T) {
-	var err error
-	ses4RPC, err = newRPCClient(ses4Cfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	ses4RPC = engine.NewRPCClient(t, ses4Cfg.ListenCfg())
 }
 
 func testSes4ItLoadFromFolder(t *testing.T) {

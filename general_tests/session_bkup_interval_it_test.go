@@ -85,6 +85,7 @@ func TestSessionsBkupIntrvl(t *testing.T) {
 }
 
 func testSessionSBkupIntrvlInitCfg(t *testing.T) {
+	var err error
 	sBkupCfgPath = path.Join(*utils.DataDir, "conf", "samples", sBkupCfgDIR)
 	if sBkupCfg, err = config.NewCGRConfigFromPath(sBkupCfgPath); err != nil {
 		t.Fatal(err)
@@ -110,9 +111,7 @@ func testSessionSBkupIntrvlStartEngine(t *testing.T) {
 
 // Connect rpc client to rater
 func testSessionSBkupIntrvlApierRpcConn(t *testing.T) {
-	if sBkupRPC, err = newRPCClient(sBkupCfg.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	sBkupRPC = engine.NewRPCClient(t, sBkupCfg.ListenCfg())
 }
 
 // Load the tariff plan, creating accounts and their balances
@@ -137,7 +136,7 @@ RP_ANY,DR_ANY_20CNT,*any,10`,
 cgrates.org,call,*any,2014-01-14T00:00:00Z,RP_ANY,`,
 	}
 
-	loadCSVs(t, sBkupRPC, "", t.TempDir(), tpFiles)
+	engine.LoadCSVs(t, sBkupRPC, "", tpFiles)
 
 	time.Sleep(time.Duration(*utils.WaitRater) * time.Millisecond)
 }
@@ -223,7 +222,7 @@ func testSessionSBkupIntrvlConcurrentAPIWithInterval(t *testing.T) {
 }
 
 func testSessionSBkupIntrvlGetBackedupSessions1(t *testing.T) {
-
+	var err error
 	if *utils.DBType == utils.MetaMySQL || *utils.DBType == utils.MetaPostgres {
 		dDB, err = engine.NewRedisStorage(
 			fmt.Sprintf("%s:%s", sBkupCfg.DataDbCfg().Host, sBkupCfg.DataDbCfg().Port),

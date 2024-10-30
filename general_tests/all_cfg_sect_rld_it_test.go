@@ -120,6 +120,7 @@ func TestSectChange(t *testing.T) {
 }
 
 func testSectLoadConfig(t *testing.T) {
+	var err error
 	testSectCfgPath = path.Join(*utils.DataDir, "conf", "samples", testSectCfgDir)
 	if testSectCfg, err = config.NewCGRConfigFromPath(testSectCfgPath); err != nil {
 		t.Error(err)
@@ -148,11 +149,7 @@ func testSectStartEngine(t *testing.T) {
 }
 
 func testSectRPCConn(t *testing.T) {
-	var err error
-	testSectRPC, err = newRPCClient(testSectCfg.ListenCfg())
-	if err != nil {
-		t.Fatal(err)
-	}
+	testSectRPC = engine.NewRPCClient(t, testSectCfg.ListenCfg())
 }
 
 func testSectConfigSReloadCores(t *testing.T) {
@@ -726,7 +723,6 @@ func testSectConfigSReloadDiameterAgent(t *testing.T) {
 			"origin_realm": "cgrates.org",
 			"vendor_id": 1,
 			"product_name": "CGRateS",
-			"concurrent_requests": -1,
 			"synced_conn_requests": false,
 			"asr_template": "asr_template",
 			"rar_template": "rar_template",
@@ -752,7 +748,7 @@ func testSectConfigSReloadDiameterAgent(t *testing.T) {
 	} else if reply != utils.OK {
 		t.Errorf("Expected OK received: %+v", reply)
 	}
-	cfgStr := "{\"diameter_agent\":{\"asr_template\":\"asr_template\",\"concurrent_requests\":-1,\"dictionaries_path\":\"/usr/share/cgrates/diameter/dict/\",\"enabled\":true,\"forced_disconnect\":\"*none\",\"listen\":\"127.0.0.1:3868\",\"listen_net\":\"tcp\",\"origin_host\":\"CGR-DA\",\"origin_realm\":\"cgrates.org\",\"product_name\":\"CGRateS\",\"rar_template\":\"rar_template\",\"request_processors\":[{\"filters\":[],\"flags\":[\"1\"],\"id\":\"cgrates\",\"reply_fields\":[{\"path\":\"randomPath\",\"tag\":\"randomPath\"}],\"request_fields\":[{\"path\":\"randomPath\",\"tag\":\"randomPath\"}],\"tenant\":\"1\",\"timezone\":\"\"}],\"sessions_conns\":[\"*birpc_internal\"],\"synced_conn_requests\":false,\"vendor_id\":1}}"
+	cfgStr := `{"diameter_agent":{"asr_template":"asr_template","dictionaries_path":"/usr/share/cgrates/diameter/dict/","enabled":true,"forced_disconnect":"*none","listen":"127.0.0.1:3868","listen_net":"tcp","origin_host":"CGR-DA","origin_realm":"cgrates.org","product_name":"CGRateS","rar_template":"rar_template","request_processors":[{"filters":[],"flags":["1"],"id":"cgrates","reply_fields":[{"path":"randomPath","tag":"randomPath"}],"request_fields":[{"path":"randomPath","tag":"randomPath"}],"tenant":"1","timezone":""}],"sessions_conns":["*birpc_internal"],"synced_conn_requests":false,"vendor_id":1}}`
 	var rpl string
 	if err := testSectRPC.Call(context.Background(), utils.ConfigSv1GetConfigAsJSON, &config.SectionWithAPIOpts{
 		Tenant:  "cgrates.org",

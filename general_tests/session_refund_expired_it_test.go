@@ -97,6 +97,7 @@ func TestSesExpIt(t *testing.T) {
 
 // test for 0 balance with sesExpsion terminate with 1s usage
 func testSesExpItLoadConfig(t *testing.T) {
+	var err error
 	sesExpCfgPath = path.Join(*utils.DataDir, "conf", "samples", sesExpCfgDIR)
 	if sesExpCfg, err = config.NewCGRConfigFromPath(sesExpCfgPath); err != nil {
 		t.Error(err)
@@ -122,10 +123,7 @@ func testSesExpItStartEngine(t *testing.T) {
 }
 
 func testSesExpItRPCConn(t *testing.T) {
-	var err error
-	if sesExpRPC, err = newRPCClient(sesExpCfg.ListenCfg()); err != nil {
-		t.Fatal(err)
-	}
+	sesExpRPC = engine.NewRPCClient(t, sesExpCfg.ListenCfg())
 }
 
 func testSesExpItLoadFromFolder(t *testing.T) {
