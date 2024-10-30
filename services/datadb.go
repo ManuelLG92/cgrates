@@ -61,6 +61,8 @@ func (db *DataDBService) Start() (err error) {
 	db.Lock()
 	defer db.Unlock()
 	db.oldDBCfg = db.cfg.DataDbCfg().Clone()
+	db.oldDBCfg = db.cfg.DataDbCfg().Clone()
+	utils.Logger.Info(fmt.Sprintf("DataDbCfg: %+v", db.cfg.DataDbCfg()))
 	dbConn, err := engine.NewDataDBConn(db.cfg.DataDbCfg().Type,
 		db.cfg.DataDbCfg().Host, db.cfg.DataDbCfg().Port,
 		db.cfg.DataDbCfg().Name, db.cfg.DataDbCfg().User,

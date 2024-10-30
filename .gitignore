@@ -22,3 +22,4 @@ data/docker/scratch/cgr-console
 data/docker/scratch/cgr-loader
 data/docker/scratch/cgr-migrator
 data/docker/scratch/cgr-tester
+.idea
